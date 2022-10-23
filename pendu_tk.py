@@ -256,7 +256,7 @@ def update():
     <li><b>Version 1.1.2</b><ol><li>Ajout des sections &laquo; Aide &raquo; et &laquo; Notes de mises à jour &raquo;</li><li>Changement des musiques de victoire et de perte</li><li>Correction d'un bug d'espacement des éléments</li><li>Suppression du verbe &laquo; branler &raquo; ainsi que de toutes ses conjugaisons du dictionnaire de mot difficile.</li></ol></li>
     <li><b>Version 1.1.1</b><ol><li>Fenêtre de jeu plus grande et espacement de certains éléments du jeu</li><li>Changement de certaines polices (invisible sur certaines machines)</li><li>Le titre se met en gras en fonction des différents modes de jeu</li></ol></li>
     <li><b>Version 1.1</b><ol><li>Ajout du mode de jeu &laquo; Difficile &raquo; et implémentation de son score et meilleur score</li><li>Ré-organisation et ajout d'éléments dans la barre de menus</li><li>Ajout d'un raccourci clavier pour quitter le jeu</li><li>Ajout de la possibilité de retourner au menu principal après avoir terminé une partie</li><li>Ajout et changement des musiques</li><li>Changement de couleur du titre en fonction du mode de jeu</li></ol></li>
-    <li><b>Version 1.0.2</b><ol><li>Ajout d'images pour la victoire et la perte</li><li>Ajout de différents musiques</li></ol></li>
+    <li><b>Version 1.0.2</b><ol><li>Ajout d'images pour la victoire et la perte</li><li>Ajout de différentes musiques</li></ol></li>
     <li><b>Version 1.0</b><ol><li>Publication de la première version stable du jeu du pendu avec une interface graphique</li></ol></li></ul>
     <p>Section fournie et mise à jour par Andrei Zeucianu</p>""")
     html_update.pack(padx=20, pady=20)
