@@ -96,7 +96,7 @@ score_grec = 0
 best_score_grec = score_grec
 
 # Création des différents fichiers de scores s'ils n'existent pas
-name_file = ['score.txt', 'score_diff.txt', 'score_aveugle.txt', 'score_grec.txt']
+name_file = ['score\\score.txt', 'score\\score_diff.txt', 'score\\score_aveugle.txt', 'score\\score_grec.txt']
 for i in name_file:
     if os.path.exists(i)==False:
         fichier = open(i, "w", encoding="utf-8")
@@ -104,26 +104,26 @@ for i in name_file:
         fichier.close()
 
 # Récupération des scores dans les fichiers de score
-fichier = open("score.txt", "r", encoding="utf-8")
+fichier = open("score\\score.txt", "r", encoding="utf-8")
 best_score = fichier.read()
 fichier.close()
 
-fichier = open("score_diff.txt", "r", encoding="utf-8")
+fichier = open("score\\score_diff.txt", "r", encoding="utf-8")
 best_score_diff = fichier.read()
 fichier.close()
 
-fichier = open("score_aveugle.txt", "r", encoding="utf-8")
+fichier = open("score\\score_aveugle.txt", "r", encoding="utf-8")
 best_score_aveugle = fichier.read()
 fichier.close()
 
-fichier = open("score_grec.txt", "r", encoding="utf-8")
+fichier = open("score\\score_grec.txt", "r", encoding="utf-8")
 best_score_grec = fichier.read()
 fichier.close()
 
 def write_bestscore(score):
     """Écrit le meilleur score dans le fichier. Permet aussi de réinitialiser le meilleur score."""
     global best_score
-    fichier = open("score.txt", "w", encoding="utf-8")
+    fichier = open("score\\score.txt", "w", encoding="utf-8")
     if score == "reset":
         fichier.write("0")
         best_score = 0
@@ -137,7 +137,7 @@ def write_bestscore(score):
 def write_bestscore_diff(score_diff):
     """Écrit le meilleur score difficile dans le fichier. Permet aussi de réinitialiser le meilleur score dificile."""
     global best_score_diff
-    fichier = open("score_diff.txt", "w", encoding="utf-8")
+    fichier = open("score\\score_diff.txt", "w", encoding="utf-8")
     if score_diff == "reset":
         fichier.write("0")
         best_score_diff = 0
@@ -151,7 +151,7 @@ def write_bestscore_diff(score_diff):
 def write_bestscore_aveugle(score_aveugle):
     """Écrit le meilleur score aveugle dans le fichier. Permet aussi de réinitialiser le meilleur score aveugle."""
     global best_score_aveugle
-    fichier = open("score_aveugle.txt", "w", encoding="utf-8")
+    fichier = open("score\\score_aveugle.txt", "w", encoding="utf-8")
     if score_aveugle == "reset":
         fichier.write("0")
         best_score_aveugle = 0
@@ -165,7 +165,7 @@ def write_bestscore_aveugle(score_aveugle):
 def write_bestscore_grec(score_grec):
     """Écrit le meilleur score grec dans le fichier. Permet aussi de réinitialiser le meilleur score grec."""
     global best_score_grec
-    fichier = open("score_grec.txt", "w", encoding="utf-8")
+    fichier = open("score\\score_grec.txt", "w", encoding="utf-8")
     if score_grec == "reset":
         fichier.write("0")
         best_score_grec = 0
@@ -507,25 +507,25 @@ def initialisation(replay, mode_jeu):
     if mode=='diff':
         texte_principal('red', False)
         pendu0()
-        choix_mot("dico_diff.txt")
+        choix_mot("dico\\dico_diff.txt")
         cacher_mot()
         play_music("music\\jeu_diff.mp3", True)
     if mode=='grec':
         texte_principal('grec', False) 
         pendu0() 
-        choix_mot("dico_grec.txt")
+        choix_mot("dico\\dico_grec.txt")
         cacher_mot()
         play_music("music\\jeu_grec.mp3", True)
     if mode=='aveugle':
         texte_principal('black', False)
         pendu0()
-        choix_mot("dico.txt")
+        choix_mot("dico\\dico.txt")
         cacher_mot()
         fond_color("#ffffff")
     if mode=='normal':
         texte_principal('black', False)
         pendu0()
-        choix_mot("dico.txt")
+        choix_mot("dico\\dico.txt")
         cacher_mot()
         play_music("music\\jeu.mp3", True)
     creation_bouton()
