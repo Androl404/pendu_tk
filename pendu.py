@@ -189,7 +189,7 @@ def show_bestscore(reinit_mode):
         
 def about():
     """Définit le message à propos des auteurs."""
-    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Participation au développement : Anthony Gago--Klimenko','Musiques sélectionnées par Andrei Zeucianu et partiellement composées par Anthony Gago--Klimenko' , 'Copyright 2022, Tous droits réservés', 'Version 1.3.2 (Stable)']
+    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Participation au développement : Anthony Gago--Klimenko','Musiques sélectionnées par Andrei Zeucianu et partiellement composées par Anthony Gago--Klimenko' , 'Copyright 2022, Tous droits réservés', 'Version 1.3.3 (Stable)']
     messagebox.showinfo('À propos de ce jeu', "\n".join(lines))
 
 def on_close():
@@ -249,7 +249,8 @@ def update():
 
     S = tk.Scrollbar(update)
     S.pack(side=tk.RIGHT, fill=tk.Y)
-    html_update = HTMLLabel(update, html="""<ul><li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
+    html_update = HTMLLabel(update, html="""<ul><li><b>Version 1.3.3</b><ol><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li></ol></li>
+    <li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
     <li><b>Version 1.3.1</b><ol><li>Dans le mode de jeu &laquo; Grec &raquo;, certaines lettres grecques n'apparaissaient pas comme bouton. Ce but a été partiellement corrigé puisque la dernière lettre est en doublon mais cela ne devrait pas affecter la partie.</li></ol></li>
     <li><b>Version 1.3</b><ol><li>Ajout du mode de jeu &laquo; Grec &raquo;, de ses bruitages, de son aide, de son score et mise à jour de la barre de menus</li><li>Correction de l'affichage des boutons de l'écran de fin en mode &laquo; Aveugle &raquo;</li></ol></li>
     <li><b>Version 1.2</b><ol><li>Ajout du mode de jeu &laquo; Aveugle &raquo;, de ses bruitages, de sa couleur de fond, de son aide, de son score et mise à jour de la barre de menus</li><li>Ajout d'un raccourci clavier pour ouvrir l'aide</li><li>Ajout de boutons pour fermer l'aide et les notes de mises à jour</li></ol></li>
