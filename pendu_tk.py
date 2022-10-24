@@ -323,7 +323,7 @@ def pendu0():
     button_play_diff.destroy()
     button_play_aveugle.destroy()
     button_play_grec.destroy()
-    img = tk.PhotoImage(file="pendu\\pendu0.png")
+    img = tk.PhotoImage(file="pendu_img\\pendu0.png")
     (l,h)=(img.width(),img.height())
     canvas_dessin = tk.Canvas(frame, width=l, height=h)
     canvas_dessin.create_image(l/2, h/2, image=img)
@@ -385,7 +385,7 @@ def rejouer(victoire):
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
             score = 0
-        button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True)])
+        button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'normal')])
         button_rejouer_oui.grid(row=0, column=1)
         button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
         button_rejouer_non.grid(row=0, column=2)
@@ -551,7 +551,7 @@ def if_in_mot(event):
         else:
             bouton_lettre.config(state='disabled', bg='darkred')
             canvas_dessin.delete("all")
-            img=tk.PhotoImage(file="pendu\\pendu"+str(nb_erreurs)+".png")
+            img=tk.PhotoImage(file="pendu_img\\pendu"+str(nb_erreurs)+".png")
             (l,h)=(img.width(),img.height())
             canvas_dessin.create_image(l/2, h/2, image=img)
             canvas_dessin.pack(side="top")
@@ -589,7 +589,7 @@ def if_in_mot_aveugle(event):
         else:
             bouton_lettre.config(state='disabled', bg='darkred')
             canvas_dessin.delete("all")
-            img=tk.PhotoImage(file="pendu\\pendu"+str(nb_erreurs)+".png")
+            img=tk.PhotoImage(file="pendu_img\\pendu"+str(nb_erreurs)+".png")
             (l,h)=(img.width(),img.height())
             canvas_dessin.create_image(l/2, h/2, image=img)
             canvas_dessin.pack(side="top")
