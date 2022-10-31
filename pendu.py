@@ -2,7 +2,7 @@
 from random import randint
 from time import sleep
 import tkinter as tk
-from tkinter import Toplevel, messagebox
+from tkinter import Toplevel, messagebox, ttk
 from tkhtmlview import HTMLLabel
 import os
 
@@ -235,53 +235,56 @@ help_menu.add_command(label="À propos", command=lambda:about())
 menu_bar.add_cascade(label="Aide", menu=help_menu)
 menu_bar.bind_all("<F1>", lambda x: help())
 
+class Window(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+    
+    def titre_icone(self, titre):
+        self.title(titre)
+        self.iconbitmap("icone.ico")
+
+        self.minsize(600,500)
+        self.geometry("600x500")
+    
+    def main_titre(self, texte):
+        title = tk.Label(self, text=texte, font=("Calibri", 40, "bold", "underline"), fg="black")
+        title.pack(side="top")
+        close_update=tk.Button(self, text="Fermer", font=("Calibri", 13), bg="lightblue", cursor="hand2", bd=1, pady=0, command=lambda:self.destroy())
+        close_update.pack(side="top")
+    
+    def contenu(self, texte):
+        S = tk.Scrollbar(self)
+        S.pack(side=tk.RIGHT, fill=tk.Y)
+        html_update = HTMLLabel(self, html=texte)
+        html_update.pack(padx=20, pady=20)
+        S.config(command=html_update.yview)
+        html_update.config(yscrollcommand=S.set)
+
+    def lancer(self):
+        self.wm_resizable(0, 0)
+        self.grab_set()
+
 def update():
-    update=Toplevel(fenetre)
-    update.title("Notes de mises à jour")
-    update.iconbitmap("icone.ico")
-    update.minsize(600,500)
-    update.geometry("600x500")
+    texte_update = """<ul><li><b>Version 1.3.3</b><ol><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li></ol></li>
+        <li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
+        <li><b>Version 1.3.1</b><ol><li>Dans le mode de jeu &laquo; Grec &raquo;, certaines lettres grecques n'apparaissaient pas comme bouton. Ce but a été partiellement corrigé puisque la dernière lettre est en doublon mais cela ne devrait pas affecter la partie.</li></ol></li>
+        <li><b>Version 1.3</b><ol><li>Ajout du mode de jeu &laquo; Grec &raquo;, de ses bruitages, de son aide, de son score et mise à jour de la barre de menus</li><li>Correction de l'affichage des boutons de l'écran de fin en mode &laquo; Aveugle &raquo;</li></ol></li>
+        <li><b>Version 1.2</b><ol><li>Ajout du mode de jeu &laquo; Aveugle &raquo;, de ses bruitages, de sa couleur de fond, de son aide, de son score et mise à jour de la barre de menus</li><li>Ajout d'un raccourci clavier pour ouvrir l'aide</li><li>Ajout de boutons pour fermer l'aide et les notes de mises à jour</li></ol></li>
+        <li><b>Version 1.1.2</b><ol><li>Ajout des sections &laquo; Aide &raquo; et &laquo; Notes de mises à jour &raquo;</li><li>Changement des musiques de victoire et de perte</li><li>Correction d'un bug d'espacement des éléments</li><li>Suppression du verbe &laquo; branler &raquo; ainsi que de toutes ses conjugaisons du dictionnaire de mot difficile.</li></ol></li>
+        <li><b>Version 1.1.1</b><ol><li>Fenêtre de jeu plus grande et espacement de certains éléments du jeu</li><li>Changement de certaines polices (invisible sur certaines machines)</li><li>Le titre se met en gras en fonction des différents modes de jeu</li></ol></li>
+        <li><b>Version 1.1</b><ol><li>Ajout du mode de jeu &laquo; Difficile &raquo; et implémentation de son score et meilleur score</li><li>Ré-organisation et ajout d'éléments dans la barre de menus</li><li>Ajout d'un raccourci clavier pour quitter le jeu</li><li>Ajout de la possibilité de retourner au menu principal après avoir terminé une partie</li><li>Ajout et changement des musiques</li><li>Changement de couleur du titre en fonction du mode de jeu</li></ol></li>
+        <li><b>Version 1.0.2</b><ol><li>Ajout d'images pour la victoire et la perte</li><li>Ajout de différentes musiques</li></ol></li>
+        <li><b>Version 1.0</b><ol><li>Publication de la première version stable du jeu du pendu avec une interface graphique</li></ol></li></ul>
+        <p>Section fournie et mise à jour par Andrei Zeucianu</p>"""
 
-    title = tk.Label(update, text="Notes de mises à jour", font=("Calibri", 40, "bold", "underline"), fg="black")
-    title.pack(side="top")
-    close_update=tk.Button(update, text="Fermer", font=("Calibri", 13), bg="lightblue", cursor="hand2", bd=1, pady=0, command=lambda:update.destroy())
-    close_update.pack(side="top")
-
-    S = tk.Scrollbar(update)
-    S.pack(side=tk.RIGHT, fill=tk.Y)
-    html_update = HTMLLabel(update, html="""<ul><li><b>Version 1.3.3</b><ol><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li></ol></li>
-    <li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
-    <li><b>Version 1.3.1</b><ol><li>Dans le mode de jeu &laquo; Grec &raquo;, certaines lettres grecques n'apparaissaient pas comme bouton. Ce but a été partiellement corrigé puisque la dernière lettre est en doublon mais cela ne devrait pas affecter la partie.</li></ol></li>
-    <li><b>Version 1.3</b><ol><li>Ajout du mode de jeu &laquo; Grec &raquo;, de ses bruitages, de son aide, de son score et mise à jour de la barre de menus</li><li>Correction de l'affichage des boutons de l'écran de fin en mode &laquo; Aveugle &raquo;</li></ol></li>
-    <li><b>Version 1.2</b><ol><li>Ajout du mode de jeu &laquo; Aveugle &raquo;, de ses bruitages, de sa couleur de fond, de son aide, de son score et mise à jour de la barre de menus</li><li>Ajout d'un raccourci clavier pour ouvrir l'aide</li><li>Ajout de boutons pour fermer l'aide et les notes de mises à jour</li></ol></li>
-    <li><b>Version 1.1.2</b><ol><li>Ajout des sections &laquo; Aide &raquo; et &laquo; Notes de mises à jour &raquo;</li><li>Changement des musiques de victoire et de perte</li><li>Correction d'un bug d'espacement des éléments</li><li>Suppression du verbe &laquo; branler &raquo; ainsi que de toutes ses conjugaisons du dictionnaire de mot difficile.</li></ol></li>
-    <li><b>Version 1.1.1</b><ol><li>Fenêtre de jeu plus grande et espacement de certains éléments du jeu</li><li>Changement de certaines polices (invisible sur certaines machines)</li><li>Le titre se met en gras en fonction des différents modes de jeu</li></ol></li>
-    <li><b>Version 1.1</b><ol><li>Ajout du mode de jeu &laquo; Difficile &raquo; et implémentation de son score et meilleur score</li><li>Ré-organisation et ajout d'éléments dans la barre de menus</li><li>Ajout d'un raccourci clavier pour quitter le jeu</li><li>Ajout de la possibilité de retourner au menu principal après avoir terminé une partie</li><li>Ajout et changement des musiques</li><li>Changement de couleur du titre en fonction du mode de jeu</li></ol></li>
-    <li><b>Version 1.0.2</b><ol><li>Ajout d'images pour la victoire et la perte</li><li>Ajout de différentes musiques</li></ol></li>
-    <li><b>Version 1.0</b><ol><li>Publication de la première version stable du jeu du pendu avec une interface graphique</li></ol></li></ul>
-    <p>Section fournie et mise à jour par Andrei Zeucianu</p>""")
-    html_update.pack(padx=20, pady=20)
-    S.config(command=html_update.yview)
-    html_update.config(yscrollcommand=S.set)
-
-    update.wm_resizable(0, 0)
-    update.grab_set()
+    update = Window(fenetre)
+    update.titre_icone("Notes de mises à jour")
+    update.main_titre("Notes de mises à jour")
+    update.contenu(texte_update)
+    update.lancer()
 
 def help():
-    help=Toplevel(fenetre)
-    help.title("Aide du jeu du pendu")
-    help.iconbitmap("icone.ico")
-    help.minsize(600, 500)
-    help.geometry("600x500")
-
-    title = tk.Label(help, text="Aide du jeu du pendu", font=("Calibri", 40, "bold", "underline"), fg="black")
-    title.pack(side="top")
-    close_help=tk.Button(help, text="Fermer", font=("Calibri", 13), bg="lightblue", cursor="hand2", bd=1, pady=0, command=lambda:help.destroy())
-    close_help.pack(side="top")
-
-    S = tk.Scrollbar(help)
-    S.pack(side=tk.RIGHT, fill=tk.Y)
-    html_label = HTMLLabel(help, html="""<p>Voici l'aide du jeu du pendu. Vous trouverez ici les règles et le fonctionnement de cette application ainsi que des différents modes de jeu disponibles.</p>
+    texte_help = """<p>Voici l'aide du jeu du pendu. Vous trouverez ici les règles et le fonctionnement de cette application ainsi que des différents modes de jeu disponibles.</p>
     <p>Le jeu du pendu en lui-même est très simple : un mot est choisi au hasard et vous devez le retrouvez en vous servant de toutes les lettres de l'alphabet. Si vous choissisez une lettre qui se trouve une ou plusieurs fois dans le mot, alors elle(s) s'affiche(nt). Sinon, vous progressez dans votre pendu. Mais attention, si vous faites 7 erreurs, la partie s'arrête et vous avez perdu.</p>
     <p>Dans cette application, vous retrouverez plusieurs modes de jeu vous tous plus difficile les uns que les autres et vous poussant à donner votre maximum.</p>
     <p>Voici les règles des différents modes de jeu :</p>
@@ -290,13 +293,13 @@ def help():
     <li><b>Mode aveugle :</b> Une partie de pendu avec des mots faciles. Cependant, vous ne voyez pas les lettres au fur et à mesure dans votre mot. Vous devez vous fier au sons émis lorsque vous cliquez sur une lettre pour savoir si cette lettre se trouve dans le mot ou pas. Il s'agit du principe MOTUS. Les lettres présentent dans le mot que vous avez trouvé émettent un bruit positif lorsque vous cliquez sur une autre lettre toujours présente dans le mot. Si une lettre n'est pas dans le mot, alors un bruit négatif est émis. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.<br>Basé sur une idée de Corentin Domenichini.</li>
     <li><b>Mode Grec :</b> Une partie de pendu normale avec des mots grecs choisit parmis 38 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.<br>Créé dans le cadre du cours de latin avec M. Jean-François Bothera.</li></ul>
     <p>Si vous rencontrez des bugs ou des soucis avec les différents fonctionnalités de cette application, contactez-moi à l'adresse <a href="mailto:benjaminpotron@gmail.com">e-mail</a> ou sur mon <a href="https://zeo.hopto.org/stpaul">site Web</a>.</p>
-    <br><br><br>Section d'aide fournie et mise à jour par Andrei Zeucianu""")
-    html_label.pack(pady=20, padx=20)
-    S.config(command=html_label.yview)
-    html_label.config(yscrollcommand=S.set)
+    <br><br><br>Section d'aide fournie et mise à jour par Andrei Zeucianu"""
 
-    help.wm_resizable(0, 0)
-    help.grab_set()
+    help = Window(fenetre)
+    help.titre_icone("Aide du jeu du pendu")
+    help.main_titre("Aide du jeu du pendu")
+    help.contenu(texte_help)
+    help.lancer()
 
 def choix_mot(file):
     """Fonction qui permet de choisir le mot qui va être caché."""
