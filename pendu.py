@@ -236,6 +236,7 @@ menu_bar.add_cascade(label="Aide", menu=help_menu)
 menu_bar.bind_all("<F1>", lambda x: help())
 
 class Window(tk.Toplevel):
+    """Permet de créer une sous-fenêtre pour l'aide ou les notes de mises à jour par exemple"""
     def __init__(self, parent):
         super().__init__(parent)
     
@@ -265,6 +266,7 @@ class Window(tk.Toplevel):
         self.grab_set()
 
 def update():
+    """Crée une sous-fenêtre à l'aide de la classe Window pour afficher les notes de mises à jour"""
     texte_update = """<ul><li><b>Version 1.3.3</b><ol><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li></ol></li>
         <li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
         <li><b>Version 1.3.1</b><ol><li>Dans le mode de jeu &laquo; Grec &raquo;, certaines lettres grecques n'apparaissaient pas comme bouton. Ce but a été partiellement corrigé puisque la dernière lettre est en doublon mais cela ne devrait pas affecter la partie.</li></ol></li>
@@ -284,6 +286,7 @@ def update():
     update.lancer()
 
 def help():
+    """Crée une sous-fenêtre à l'aide de la classe Window pour afficher l'aide du jeu du pendu"""
     texte_help = """<p>Voici l'aide du jeu du pendu. Vous trouverez ici les règles et le fonctionnement de cette application ainsi que des différents modes de jeu disponibles.</p>
     <p>Le jeu du pendu en lui-même est très simple : un mot est choisi au hasard et vous devez le retrouvez en vous servant de toutes les lettres de l'alphabet. Si vous choissisez une lettre qui se trouve une ou plusieurs fois dans le mot, alors elle(s) s'affiche(nt). Sinon, vous progressez dans votre pendu. Mais attention, si vous faites 7 erreurs, la partie s'arrête et vous avez perdu.</p>
     <p>Dans cette application, vous retrouverez plusieurs modes de jeu vous tous plus difficile les uns que les autres et vous poussant à donner votre maximum.</p>
