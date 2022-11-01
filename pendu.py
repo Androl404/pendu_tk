@@ -309,7 +309,7 @@ def contributeurs():
     texte_contributeurs = """<p>Voici la liste des personnes ayant contribué à ce projet ainsi que l'aide concrète apportée :
     <ul><li><b>Anthony GAGO--KLIMENKO</b> : Aide mineure au développement et composition des musiques du mode &laquo; Normal &raquo;</li>
     <li><b>Corentin DOMENICHINI</b> : Bêta-testing du jeu pour différentes versions et mode &laquo; Aveugle &raquo; basé sur une de ses idées</li></ul></p>
-    <p>Section fournie et mise à jour par Andrei Zeucianu"""
+    <p>Section fournie et mise à jour par Andrei Zeucianu</p>"""
 
     contributeurs = Window(fenetre)
     contributeurs.titre_icone("Contributeurs")
