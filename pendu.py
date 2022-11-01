@@ -382,7 +382,7 @@ def cacher_mot():
     else:
         mot_cache_label=tk.Label(frame, text=len(mot_choisi)*"_ ", font=("Calibri", 36))
     mot_cache_label.pack(side="top")
-    # print(mot_choisi)
+    print(mot_choisi)
 
 def rejouer(victoire):
     """Propose de refaire une partie de pendu."""
@@ -392,7 +392,7 @@ def rejouer(victoire):
     if mode == "normal":
         if victoire==True:
             score += 1
-            if str(score)>str(best_score):
+            if int(score) > int(best_score):
                 best_score = score
                 write_bestscore(str(best_score))
             label_score = tk.Label(frame, text="Votre score est de : " + str(score) + ". Le meilleur score est de : " + str(best_score) + ".", font=("Comic Sans MS", 16))
@@ -412,7 +412,7 @@ def rejouer(victoire):
     if mode == "diff":
         if victoire==True:
             score_diff += 1
-            if str(score_diff)>str(best_score_diff):
+            if int(score_diff) > int(best_score_diff):
                 best_score_diff = score_diff
                 write_bestscore_diff(str(best_score_diff))
             label_score = tk.Label(frame, text="Votre score est de : " + str(score_diff) + ". Le meilleur score est de : " + str(best_score_diff) + ".", font=("Comic Sans MS", 16))
@@ -432,7 +432,7 @@ def rejouer(victoire):
     if mode == "aveugle":
         if victoire==True:
             score_aveugle += 1
-            if str(score_aveugle)>str(best_score_aveugle):
+            if int(score_aveugle) > int(best_score_aveugle):
                 best_score_aveugle = score_aveugle
                 write_bestscore_aveugle(str(best_score_aveugle))
             label_score = tk.Label(frame, text="Votre score est de : " + str(score_aveugle) + ". Le meilleur score est de : " + str(best_score_aveugle) + ".", font=("Comic Sans MS", 16))
@@ -454,7 +454,7 @@ def rejouer(victoire):
     if mode == "grec":
         if victoire==True:
             score_grec += 1
-            if str(score_grec)>str(best_score_grec):
+            if int(score_grec) > int(best_score_grec):
                 best_score_grec = score_grec
                 write_bestscore_grec(str(best_score_grec))
             label_score = tk.Label(frame, text="Votre score est de : " + str(score_grec) + ". Le meilleur score est de : " + str(best_score_grec) + ".", font=("Comic Sans MS", 16))
