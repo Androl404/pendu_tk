@@ -12,4 +12,4 @@ Pour l'instant, le jeu du pendu n'est disponible que pour *Windows*. Cependant, 
 
 ## Screenshot
 
-![alt text](https://github.com/Androl404/pendu_tk/tree/master/screenshot/home.png)
+![alt text](https://github.com/Androl404/pendu_tk/tree/master/screenshot/home.png?raw=true)
