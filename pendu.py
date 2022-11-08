@@ -382,7 +382,7 @@ def cacher_mot():
     else:
         mot_cache_label=tk.Label(frame, text=len(mot_choisi)*"_ ", font=("Calibri", 36))
     mot_cache_label.pack(side="top")
-    print(mot_choisi)
+    # print(mot_choisi)
 
 def rejouer(victoire):
     """Propose de refaire une partie de pendu."""
