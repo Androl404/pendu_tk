@@ -10,6 +10,14 @@ Pour l'instant, le jeu du pendu n'est disponible que pour *Windows*. Cependant, 
 
 > Pour télécharger le jeudu pendu ou son code source, c'est par [ici](https://github.com/Androl404/pendu_tk/releases).
 
-## Screenshot
+## Captures d'écran
 
-![alt text](https://github.com/Androl404/pendu_tk/tree/master/screenshot/home.png?raw=true)
+![Accueil](https://raw.githubusercontent.com/Androl404/pendu_tk/master/screenshot/home.png)
+
+![Mode Normal](https://raw.githubusercontent.com/Androl404/pendu_tk/master/screenshot/normal.png)
+
+![Mode Grec](https://raw.githubusercontent.com/Androl404/pendu_tk/master/screenshot/grec.png)
+
+![Mode Aveugle](https://raw.githubusercontent.com/Androl404/pendu_tk/master/screenshot/aveugle.png)
+
+![Mode Difficile](https://raw.githubusercontent.com/Androl404/pendu_tk/master/screenshot/diff.png)
