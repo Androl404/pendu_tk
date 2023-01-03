@@ -8,7 +8,7 @@ Principalement codée en *Python*, cette application utilise le module *TKinter*
 
 Pour l'instant, le jeu du pendu n'est disponible que pour *Windows*. Cependant, des installateurs pour *Linux* et *MacOs* seront bientôt disponible.
 
-> Pour télécharger le jeudu pendu ou son code source, c'est par [ici](https://github.com/Androl404/pendu_tk/releases).
+> Pour télécharger le jeu du pendu ou son code source, c'est par [ici](https://github.com/Androl404/pendu_tk/releases).
 
 ## Captures d'écran
 
