@@ -96,34 +96,40 @@ score_grec = 0
 best_score_grec = score_grec
 
 # Création des différents fichiers de scores s'ils n'existent pas
-name_file = ['score\\score.txt', 'score\\score_diff.txt', 'score\\score_aveugle.txt', 'score\\score_grec.txt']
+name_file = ['Jeu du pendu\\score\\score.txt', 'Jeu du pendu\\score\\score_diff.txt', 'Jeu du pendu\\score\\score_aveugle.txt', 'Jeu du pendu\\score\\score_grec.txt']
+if os.path.exists(os.getenv('APPDATA')+"\\Jeu du pendu")==False:
+    os.makedirs(os.getenv('APPDATA')+"\\Jeu du pendu\\score")
+
 for i in name_file:
-    if os.path.exists(i)==False:
-        fichier = open(i, "w", encoding="utf-8")
+    if os.path.exists(os.getenv('APPDATA')+"\\"+i)==False:
+        fichier = open(os.getenv('APPDATA')+"\\"+i, "w", encoding="utf-8")
         fichier.write("0")
         fichier.close()
 
+# Création de la varible du nom du fichier
+directory = os.getenv('APPDATA')+"\\Jeu du pendu\\score\\"
+
 # Récupération des scores dans les fichiers de score
-fichier = open("score\\score.txt", "r", encoding="utf-8")
+fichier = open(directory+"score.txt", "r", encoding="utf-8")
 best_score = fichier.read()
 fichier.close()
 
-fichier = open("score\\score_diff.txt", "r", encoding="utf-8")
+fichier = open(directory+"score_diff.txt", "r", encoding="utf-8")
 best_score_diff = fichier.read()
 fichier.close()
 
-fichier = open("score\\score_aveugle.txt", "r", encoding="utf-8")
+fichier = open(directory+"score_aveugle.txt", "r", encoding="utf-8")
 best_score_aveugle = fichier.read()
 fichier.close()
 
-fichier = open("score\\score_grec.txt", "r", encoding="utf-8")
+fichier = open(directory+"score_grec.txt", "r", encoding="utf-8")
 best_score_grec = fichier.read()
 fichier.close()
 
 def write_bestscore(score):
     """Écrit le meilleur score dans le fichier. Permet aussi de réinitialiser le meilleur score."""
-    global best_score
-    fichier = open("score\\score.txt", "w", encoding="utf-8")
+    global best_score, directory
+    fichier = open(directory+"score.txt", "w", encoding="utf-8")
     if score == "reset":
         fichier.write("0")
         best_score = 0
@@ -136,8 +142,8 @@ def write_bestscore(score):
 
 def write_bestscore_diff(score_diff):
     """Écrit le meilleur score difficile dans le fichier. Permet aussi de réinitialiser le meilleur score dificile."""
-    global best_score_diff
-    fichier = open("score\\score_diff.txt", "w", encoding="utf-8")
+    global best_score_diff, directory
+    fichier = open(directory+"score_diff.txt", "w", encoding="utf-8")
     if score_diff == "reset":
         fichier.write("0")
         best_score_diff = 0
@@ -150,8 +156,8 @@ def write_bestscore_diff(score_diff):
 
 def write_bestscore_aveugle(score_aveugle):
     """Écrit le meilleur score aveugle dans le fichier. Permet aussi de réinitialiser le meilleur score aveugle."""
-    global best_score_aveugle
-    fichier = open("score\\score_aveugle.txt", "w", encoding="utf-8")
+    global best_score_aveugle, directory
+    fichier = open(directory+"score_aveugle.txt", "w", encoding="utf-8")
     if score_aveugle == "reset":
         fichier.write("0")
         best_score_aveugle = 0
@@ -164,8 +170,8 @@ def write_bestscore_aveugle(score_aveugle):
 
 def write_bestscore_grec(score_grec):
     """Écrit le meilleur score grec dans le fichier. Permet aussi de réinitialiser le meilleur score grec."""
-    global best_score_grec
-    fichier = open("score\\score_grec.txt", "w", encoding="utf-8")
+    global best_score_grec, directory
+    fichier = open(directory+"score_grec.txt", "w", encoding="utf-8")
     if score_grec == "reset":
         fichier.write("0")
         best_score_grec = 0
@@ -189,7 +195,7 @@ def show_bestscore(reinit_mode):
         
 def about():
     """Définit le message à propos des auteurs."""
-    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Merci aux contributeurs ❤' , 'Copyright 2022, Tous droits réservés', 'Version 1.3.3 (Stable)']
+    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Merci aux contributeurs ❤' , 'Copyright 2022, Tous droits réservés', 'Version 1.3.4 (Stable)']
     messagebox.showinfo('À propos de ce jeu', "\n".join(lines))
 
 def on_close():
@@ -268,7 +274,8 @@ class Window(tk.Toplevel):
 
 def update():
     """Crée une sous-fenêtre à l'aide de la classe Window pour afficher les notes de mises à jour"""
-    texte_update = """<ul><li><b>Version 1.3.3</b><ol><li>Optimisation du code</li><li>Ajout de la section &laquo; Contributeurs &raquo;</li><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li><li>Correction d'un bug qui empêchait le meilleur score de monter à plus de 9</li></ol></li>
+    texte_update = """<ul><li><b>Version 1.3.4</b><ol><li>Changement de l'emplacement du stockage du score, pour une meilleure compatibilité pour l'installation dans le dossier "Programs Files" de Windows</li></ol></li>
+        <li><b>Version 1.3.3</b><ol><li>Optimisation du code</li><li>Ajout de la section &laquo; Contributeurs &raquo;</li><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li><li>Correction d'un bug qui empêchait le meilleur score de monter à plus de 9</li></ol></li>
         <li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
         <li><b>Version 1.3.1</b><ol><li>Dans le mode de jeu &laquo; Grec &raquo;, certaines lettres grecques n'apparaissaient pas comme bouton. Ce but a été partiellement corrigé puisque la dernière lettre est en doublon mais cela ne devrait pas affecter la partie.</li></ol></li>
         <li><b>Version 1.3</b><ol><li>Ajout du mode de jeu &laquo; Grec &raquo;, de ses bruitages, de son aide, de son score et mise à jour de la barre de menus</li><li>Correction de l'affichage des boutons de l'écran de fin en mode &laquo; Aveugle &raquo;</li></ol></li>
