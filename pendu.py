@@ -97,7 +97,7 @@ best_score_grec = score_grec
 
 # Création des différents fichiers de scores s'ils n'existent pas
 name_file = ['Jeu du pendu\\score\\score.txt', 'Jeu du pendu\\score\\score_diff.txt', 'Jeu du pendu\\score\\score_aveugle.txt', 'Jeu du pendu\\score\\score_grec.txt']
-if os.path.exists(os.getenv('APPDATA')+"\\Jeu du pendu")==False:
+if os.path.exists(os.getenv('APPDATA')+"\\Jeu du pendu\\score")==False:
     os.makedirs(os.getenv('APPDATA')+"\\Jeu du pendu\\score")
 
 for i in name_file:
@@ -195,7 +195,7 @@ def show_bestscore(reinit_mode):
         
 def about():
     """Définit le message à propos des auteurs."""
-    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Merci aux contributeurs ❤' , 'Copyright 2022, Tous droits réservés', 'Version 1.3.4 (Stable)']
+    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Merci aux contributeurs ❤' , 'Copyright 2023, Tous droits réservés', 'Version 1.3.5 (Stable)']
     messagebox.showinfo('À propos de ce jeu', "\n".join(lines))
 
 def on_close():
@@ -250,7 +250,6 @@ class Window(tk.Toplevel):
     def titre_icone(self, titre):
         self.title(titre)
         self.iconbitmap("icone.ico")
-
         self.minsize(600,500)
         self.geometry("600x500")
     
@@ -274,7 +273,8 @@ class Window(tk.Toplevel):
 
 def update():
     """Crée une sous-fenêtre à l'aide de la classe Window pour afficher les notes de mises à jour"""
-    texte_update = """<ul><li><b>Version 1.3.4</b><ol><li>Changement de l'emplacement du stockage du score, pour une meilleure compatibilité pour l'installation dans le dossier "Programs Files" de Windows</li></ol></li>
+    texte_update = """<ul><li><b>Version 1.3.5</b><ol><li>Correction d'un bug sur la création des répertoires pour le stockage du score</li><li>Correction d'une erreur dans un des mots du mode Grec</li><li>Mise à jour des sections &laquo; Contributeurs&raquo;, &laquo; Aide &raquo; et &laquo; À propos &raquo;</li><li>Ajout de mots au mode Grec</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 105 parties de pendu en utilisant la même fenêtre</li></ol></li>
+        <li><b>Version 1.3.4</b><ol><li>Changement de l'emplacement du stockage du score, pour une meilleure compatibilité pour l'installation dans le dossier "Programs Files" de Windows</li></ol></li>
         <li><b>Version 1.3.3</b><ol><li>Optimisation du code</li><li>Ajout de la section &laquo; Contributeurs &raquo;</li><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li><li>Correction d'un bug qui empêchait le meilleur score de monter à plus de 9</li></ol></li>
         <li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
         <li><b>Version 1.3.1</b><ol><li>Dans le mode de jeu &laquo; Grec &raquo;, certaines lettres grecques n'apparaissaient pas comme bouton. Ce but a été partiellement corrigé puisque la dernière lettre est en doublon mais cela ne devrait pas affecter la partie.</li></ol></li>
@@ -302,7 +302,7 @@ def help():
     <ul><li><b>Mode normal :</b> Une partie de pendu, tout ce qu'il y a de plus normal. Un mot facile est choisi parmi 889 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.</li>
     <li><b>Mode difficile :</b> Une partie de pendu, mais des mots beaucoup plus difficiles venants essentiellement du XVIIème siècle. Ce mot est choisi parmis 328 969 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.</li>
     <li><b>Mode aveugle :</b> Une partie de pendu avec des mots faciles. Cependant, vous ne voyez pas les lettres au fur et à mesure dans votre mot. Vous devez vous fier au sons émis lorsque vous cliquez sur une lettre pour savoir si cette lettre se trouve dans le mot ou pas. Il s'agit du principe MOTUS. Les lettres présentent dans le mot que vous avez trouvé émettent un bruit positif lorsque vous cliquez sur une autre lettre toujours présente dans le mot. Si une lettre n'est pas dans le mot, alors un bruit négatif est émis. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.</li>
-    <li><b>Mode Grec :</b> Une partie de pendu normale avec des mots grecs choisit parmis 38 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.<br>Créé dans le cadre du cours de latin avec M. Jean-François Bothera.</li></ul>
+    <li><b>Mode Grec :</b> Une partie de pendu normale avec des mots grecs choisit parmis 107 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.<br>Créé dans le cadre du cours de latin avec M. Jean-François Bothera.</li></ul>
     <p>Si vous rencontrez des bugs ou des soucis avec les différents fonctionnalités de cette application, contactez-moi à l'adresse <a href="mailto:benjaminpotron@gmail.com">e-mail</a> ou sur mon <a href="https://zeo.hopto.org/stpaul">site Web</a>.</p>
     <br><br><br>Section d'aide fournie et mise à jour par Andrei Zeucianu"""
 
@@ -315,7 +315,7 @@ def help():
 def contributeurs():
     texte_contributeurs = """<p>Voici la liste des personnes ayant contribué à ce projet ainsi que l'aide concrète apportée :
     <ul><li><b>Anthony GAGO--KLIMENKO</b> : Aide mineure au développement et composition des musiques du mode &laquo; Normal &raquo;</li>
-    <li><b>Corentin DOMENICHINI</b> : Bêta-testing du jeu pour différentes versions et mode &laquo; Aveugle &raquo; basé sur une de ses idées</li></ul></p>
+    <li><b>Corentin DOMENICHINI</b> : Bêta-testing du jeu pour différentes versions, mode &laquo; Aveugle &raquo; basé sur une de ses idées, fourniture de la liste de mots difficiles et revue générale du jeu</li></ul></p>
     <p>Section fournie et mise à jour par Andrei Zeucianu</p>"""
 
     contributeurs = Window(fenetre)
@@ -340,7 +340,7 @@ def choix_mot(file):
         mots_utilisees.append(mot_choisi)
     else:
         choix_mot(file)
-    if len(mots_utilisees)==36:
+    if len(mots_utilisees)>=105:
         create_mots_utilisees()
 
 def pendu0():
