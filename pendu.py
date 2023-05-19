@@ -4,6 +4,8 @@ from time import sleep
 import tkinter as tk
 from tkinter import messagebox
 from tkhtmlview import HTMLLabel
+import webbrowser
+import urllib.request
 import os
 
 # Importation de "Pygame" et suppression de son message de bienvenue dans la console
@@ -22,6 +24,24 @@ fenetre.minsize(900, 600)
 fenetre.geometry("900x600")
 frame = tk.Frame(fenetre)
 #fenetre.configure(bg='#f0f0f0')
+
+pendu_version = '1.3.6'
+
+def open_link(link):
+    webbrowser.open(link)
+
+def verify_update():
+    file = []
+    try:
+        for line in urllib.request.urlopen('https://raw.githubusercontent.com/Androl404/pendu_tk/master/last_version.txt'):
+            file.append(line.decode('utf-8'))
+    except:
+        messagebox.showwarning('Vérification des mises à jour', 'La vérification des mises à jour a échoué.\nVeuillez vérifier votre connexion Internet et réessayer !')
+    if len(file) != 0:
+        if file[0][:-1] == pendu_version:
+            messagebox.showinfo('Vérification des mises à jour', f'Vous êtes bien sur la dernière version du jeu du pendu : {file[0][:-1]}.')
+        else:
+            messagebox.showinfo('Vérification des mises à jour', f'Une mise à jour vers la version {file[0][:-1]} est disponible.\nVous pouvez la télécharger depuis le dépôt GitHub.\nVous êtes actuellement sur la version {pendu_version}.')
 
 def play_music(music, loops):
     """Joue la musique donné en paramètre. Possibilité de jouer une musique en boucle."""
@@ -195,7 +215,7 @@ def show_bestscore(reinit_mode):
         
 def about():
     """Définit le message à propos des auteurs."""
-    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Merci aux contributeurs ❤' , 'Copyright 2023, Tous droits réservés', 'Version 1.3.5 (Stable)']
+    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Merci aux contributeurs ❤' , 'Copyright 2023, Tous droits réservés', f'Version {pendu_version} (Stable)']
     messagebox.showinfo('À propos de ce jeu', "\n".join(lines))
 
 def on_close():
@@ -238,6 +258,10 @@ help_menu = tk.Menu(menu_bar, tearoff=0)
 help_menu.add_command(label="Aide du jeu", accelerator="F1", command=lambda:help())
 help_menu.add_command(label="Notes de mises à jour", command=lambda:update())
 help_menu.add_command(label="Contributeurs", command=lambda:contributeurs())
+help_menu.add_separator()
+help_menu.add_command(label="Dépôt GitHub", command=lambda:open_link('https://github.com/Androl404/pendu_tk'))
+help_menu.add_command(label="Vérifier les mises à jour", command=lambda:verify_update())
+help_menu.add_separator()
 help_menu.add_command(label="À propos", command=lambda:about())
 menu_bar.add_cascade(label="Aide", menu=help_menu)
 menu_bar.bind_all("<F1>", lambda x: help())
@@ -257,13 +281,13 @@ class Window(tk.Toplevel):
         title = tk.Label(self, text=texte, font=("Calibri", 40, "bold", "underline"), fg="black")
         title.pack(side="top")
         close_update=tk.Button(self, text="Fermer", font=("Calibri", 13), bg="lightblue", cursor="hand2", bd=1, pady=0, command=lambda:self.destroy())
-        close_update.pack(side="top")
+        close_update.pack(side="bottom")
     
     def contenu(self, texte):
         S = tk.Scrollbar(self)
         S.pack(side=tk.RIGHT, fill=tk.Y)
         html_update = HTMLLabel(self, html=texte)
-        html_update.pack(padx=20, pady=20)
+        html_update.pack(padx=20, pady=0)
         S.config(command=html_update.yview)
         html_update.config(yscrollcommand=S.set)
 
@@ -273,7 +297,8 @@ class Window(tk.Toplevel):
 
 def update():
     """Crée une sous-fenêtre à l'aide de la classe Window pour afficher les notes de mises à jour"""
-    texte_update = """<ul><li><b>Version 1.3.5</b><ol><li>Correction d'un bug sur la création des répertoires pour le stockage du score</li><li>Correction d'une erreur dans un des mots du mode Grec</li><li>Mise à jour des sections &laquo; Contributeurs&raquo;, &laquo; Aide &raquo; et &laquo; À propos &raquo;</li><li>Ajout de mots au mode Grec</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 105 parties de pendu en utilisant la même fenêtre</li></ol></li>
+    texte_update = """<ul><li><b>Version 1.3.6</b><ol><li>Mise à jour de la section &laquo; Aide &raquo; du jeu du pendu</li><li>Le jeu du pendu prend désormais en charge plusieurs versions de Windows (7, 8, 8.1, 10 et 11) !</li><li>Ajout d'une option pour vérifier les mises à jour du jeu du pendu</li><li>Ajout d'un bouton dans la barre de menu pour ouvrir le dépôt GitHub</li><li>Déplacement du bouton pour fermer les fenêtres &laquo; Aide &raquo;, &laquo; Notes de mises à jour &raquo; et &laquo; Contributeurs &raquo;.</li></ol></li>
+        <li><b>Version 1.3.5</b><ol><li>Correction d'un bug sur la création des répertoires pour le stockage du score</li><li>Correction d'une erreur dans un des mots du mode Grec</li><li>Mise à jour des sections &laquo; Contributeurs&raquo;, &laquo; Aide &raquo; et &laquo; À propos &raquo;</li><li>Ajout de mots au mode Grec</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 105 parties de pendu en utilisant la même fenêtre</li></ol></li>
         <li><b>Version 1.3.4</b><ol><li>Changement de l'emplacement du stockage du score, pour une meilleure compatibilité pour l'installation dans le dossier "Programs Files" de Windows</li></ol></li>
         <li><b>Version 1.3.3</b><ol><li>Optimisation du code</li><li>Ajout de la section &laquo; Contributeurs &raquo;</li><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li><li>Correction d'un bug qui empêchait le meilleur score de monter à plus de 9</li></ol></li>
         <li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
@@ -303,7 +328,7 @@ def help():
     <li><b>Mode difficile :</b> Une partie de pendu, mais des mots beaucoup plus difficiles venants essentiellement du XVIIème siècle. Ce mot est choisi parmis 328 969 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.</li>
     <li><b>Mode aveugle :</b> Une partie de pendu avec des mots faciles. Cependant, vous ne voyez pas les lettres au fur et à mesure dans votre mot. Vous devez vous fier au sons émis lorsque vous cliquez sur une lettre pour savoir si cette lettre se trouve dans le mot ou pas. Il s'agit du principe MOTUS. Les lettres présentent dans le mot que vous avez trouvé émettent un bruit positif lorsque vous cliquez sur une autre lettre toujours présente dans le mot. Si une lettre n'est pas dans le mot, alors un bruit négatif est émis. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.</li>
     <li><b>Mode Grec :</b> Une partie de pendu normale avec des mots grecs choisit parmis 107 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.<br>Créé dans le cadre du cours de latin avec M. Jean-François Bothera.</li></ul>
-    <p>Si vous rencontrez des bugs ou des soucis avec les différents fonctionnalités de cette application, contactez-moi à l'adresse <a href="mailto:benjaminpotron@gmail.com">e-mail</a> ou sur mon <a href="https://zeo.hopto.org/stpaul">site Web</a>.</p>
+    <p>Si vous rencontrez des bugs ou des soucis avec les différents fonctionnalités de cette application, n'hésitez pas à ouvrir un ticket sur le <a href='https://github.com/Androl404/pendu_tk'>dépôt GitHub</a> du jeu.</p>
     <br><br><br>Section d'aide fournie et mise à jour par Andrei Zeucianu"""
 
     help = Window(fenetre)
