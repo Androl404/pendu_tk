@@ -28,9 +28,11 @@ frame = tk.Frame(fenetre)
 pendu_version = '1.3.6'
 
 def open_link(link):
+    """Ouvre un lien dans le navigateur Web par défaut"""
     webbrowser.open(link)
 
 def verify_update():
+    """Vérifie les mises à jour du Jeu du pendu en récupérant un fichier texte sur GitHub"""
     file = []
     try:
         for line in urllib.request.urlopen('https://raw.githubusercontent.com/Androl404/pendu_tk/master/last_version.txt'):
