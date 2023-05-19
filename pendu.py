@@ -25,7 +25,7 @@ fenetre.geometry("900x600")
 frame = tk.Frame(fenetre)
 #fenetre.configure(bg='#f0f0f0')
 
-pendu_version = '1.3.6'
+pendu_version = '1.4.0'
 
 def open_link(link):
     """Ouvre un lien dans le navigateur Web par défaut"""
@@ -78,7 +78,7 @@ texte_principal('black', True)
 
 def button(pre):
     """Création du bouton principal pour lancer le jeu, fonction de retour au menu principal et lancement de la musique du menu principal"""
-    global button_play, button_play_diff, button_play_aveugle, button_play_grec
+    global button_play, espace_bouton, button_mode
     fenetre.configure(bg='#f0f0f0')
     frame.configure(bg='#f0f0f0')
     if pre==True:
@@ -89,15 +89,43 @@ def button(pre):
         canvas_dessin.destroy()
     button_play=tk.Button(frame, text="Jouer", font=("Calibri", 36), bg="lightgreen", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(False, "normal")])
     button_play.pack(side="top")
+    espace_bouton=tk.Canvas(frame, height="30")
+    espace_bouton.pack(side="top")
+    button_mode=tk.Button(frame, text="Autres modes...", font=("Arial", 15), cursor="hand2", bg="#fff", padx="20", command=lambda:autres_modes())
+    button_mode.pack(side="top")
+    play_music("music\\Menu.mp3", True)
+button(False)
+create_mots_utilisees()
+
+def autres_modes():
+    global button_play, espace_bouton, button_mode, button_play_diff, button_play_aveugle, button_play_grec, button_main_menu
+    button_play.destroy()
+    espace_bouton.destroy()
+    button_mode.destroy()
     button_play_aveugle=tk.Button(frame, text="Mode Aveugle", font=("Consolas", 24),bg="white", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(False, "aveugle")])
     button_play_aveugle.pack(side="top")
     button_play_grec=tk.Button(frame, text="Mode Grec", font=("Castellar", 24),bg="#e5e5e5", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(False, 'grec')])
     button_play_grec.pack(side="top")
     button_play_diff=tk.Button(frame, text="Mode Difficile", font=("Algerian", 24),bg="red", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(False, "diff")])
     button_play_diff.pack(side="top")
-    play_music("music\\Menu.mp3", True)
-button(False)
-create_mots_utilisees()
+    espace_bouton=tk.Canvas(frame, height="30")
+    espace_bouton.pack(side="top")
+    button_main_menu=tk.Button(frame, text="Retour au menu principal", font=("Arial", 15), cursor="hand2", bg="#fff", padx="20", command=lambda:return_main_menu())
+    button_main_menu.pack(side="top")
+
+def return_main_menu():
+    global button_play_aveugle, button_play_grec, button_play_diff, espace_bouton, button_main_menu, button_mode, button_play
+    button_play_aveugle.destroy()
+    button_play_grec.destroy()
+    button_play_diff.destroy()
+    espace_bouton.destroy()
+    button_main_menu.destroy()
+    button_play=tk.Button(frame, text="Jouer", font=("Calibri", 36), bg="lightgreen", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(False, "normal")])
+    button_play.pack(side="top")
+    espace_bouton=tk.Canvas(frame, height="30")
+    espace_bouton.pack(side="top")
+    button_mode=tk.Button(frame, text="Autres modes...", font=("Arial", 15), cursor="hand2", bg="#fff", padx="20", command=lambda:autres_modes())
+    button_mode.pack(side="top")
 
 def fond_color(color):
     """Applique la couleur de fond donné en paramètre à tous les éléments de la partie pour permettre un changement d'ambiance."""
@@ -299,7 +327,8 @@ class Window(tk.Toplevel):
 
 def update():
     """Crée une sous-fenêtre à l'aide de la classe Window pour afficher les notes de mises à jour"""
-    texte_update = """<ul><li><b>Version 1.3.6</b><ol><li>Mise à jour de la section &laquo; Aide &raquo; du jeu du pendu</li><li>Le jeu du pendu prend désormais en charge plusieurs versions de Windows (7, 8, 8.1, 10 et 11) !</li><li>Ajout d'une option pour vérifier les mises à jour du jeu du pendu</li><li>Ajout d'un bouton dans la barre de menu pour ouvrir le dépôt GitHub</li><li>Déplacement du bouton pour fermer les fenêtres &laquo; Aide &raquo;, &laquo; Notes de mises à jour &raquo; et &laquo; Contributeurs &raquo;.</li></ol></li>
+    texte_update = """<ul><li><b>Version 1.4.0</b><ol><li>Séparation du mode normal et des autres modes dans le menu principal en les déplaçant dans une partie accessible à l'aide du bouton sur le menu principal</li></ol></li>
+        <li><b>Version 1.3.6</b><ol><li>Mise à jour de la section &laquo; Aide &raquo; du jeu du pendu</li><li>Le jeu du pendu prend désormais en charge plusieurs versions de Windows (7, 8, 8.1, 10 et 11) !</li><li>Ajout d'une option pour vérifier les mises à jour du jeu du pendu</li><li>Ajout d'un bouton dans la barre de menu pour ouvrir le dépôt GitHub</li><li>Déplacement du bouton pour fermer les fenêtres &laquo; Aide &raquo;, &laquo; Notes de mises à jour &raquo; et &laquo; Contributeurs &raquo;.</li></ol></li>
         <li><b>Version 1.3.5</b><ol><li>Correction d'un bug sur la création des répertoires pour le stockage du score</li><li>Correction d'une erreur dans un des mots du mode Grec</li><li>Mise à jour des sections &laquo; Contributeurs&raquo;, &laquo; Aide &raquo; et &laquo; À propos &raquo;</li><li>Ajout de mots au mode Grec</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 105 parties de pendu en utilisant la même fenêtre</li></ol></li>
         <li><b>Version 1.3.4</b><ol><li>Changement de l'emplacement du stockage du score, pour une meilleure compatibilité pour l'installation dans le dossier "Programs Files" de Windows</li></ol></li>
         <li><b>Version 1.3.3</b><ol><li>Optimisation du code</li><li>Ajout de la section &laquo; Contributeurs &raquo;</li><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li><li>Correction d'un bug qui empêchait le meilleur score de monter à plus de 9</li></ol></li>
@@ -556,6 +585,9 @@ def initialisation(replay, mode_jeu):
         label_rejouer.destroy()
         mot_cache_label.destroy()
         canvas_dessin.destroy()
+    else:
+        button_main_menu.destroy()
+        espace_bouton.destroy()
     nb_erreurs = 1
     lettres_utilisees=[]
     if mode=='diff':
