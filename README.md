@@ -4,11 +4,13 @@ Le pendu est un classique de notre enfance. Nous vous proposons une version info
 
 Codée dans le cadre du projet de fin d'année de Spécialité N.S.I., ce projet a évolué un peu plus tard pour se concrétiser et en faire quelque chose de plus qualitatif.
 
-Principalement codée en *Python*, cette application utilise le module *TKinter* et la langage **Tcl** pour l'interface graphique. Les installateurs Windows sont créé à l'aide du langage *Pascal*.
+Principalement codée en *Python*, cette application utilise le module *TKinter* et le langage **Tcl** pour l'interface graphique. Les installateurs Windows sont créé à l'aide du langage *Pascal*.
 
-Le jeu du pendu est disponible gratuitement pour *Windows*, *macOS* et les distributions Debian de *Linux*. Cependant, il faut savoir que la sauvegarde du meilleur score n'est implémenté que pour Windows. Le jeu est disponible pour les versions de Windows suivantes : 7, 8, 8.1, 10, et 11.
+Le jeu du pendu est disponible gratuitement pour *Windows*, *macOS* et les distributions Debian de *Linux*. Cependant, il faut savoir que la sauvegarde du meilleur score n'est implémenté que pour Windows. Le jeu est disponible pour les versions de Windows suivantes : 7 (SP1), 8, 8.1, 10, et 11.
 
 > Pour télécharger le jeu du pendu ou son code source, c'est par [ici](https://github.com/Androl404/pendu_tk/releases) !
+
+Si vous souhaitez découvrir le jeu du pendu dans la console de votre ordinateur, c'est par [ici](https://github.com/Androl404/pendu) ! 
 
 ## Captures d'écran
 
