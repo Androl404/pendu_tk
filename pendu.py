@@ -18,6 +18,7 @@ mixer.init()
 # Création de la fenêtre
 fenetre=tk.Tk()
 fenetre.title("Le jeu du pendu")
+# fenetre.iconbitmap("@./icone.xbm")
 fenetre.iconbitmap("icone.ico")
 fenetre.minsize(900, 600)
 fenetre.geometry("900x600")
