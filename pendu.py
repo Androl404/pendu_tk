@@ -258,7 +258,7 @@ def autres_modes():
     button_play_aveugle.pack(side="top")
     button_play_grec=tk.Button(canvas_bouton, text="Mode Grec", font=("Castellar", 24),bg="#e5e5e5", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(False, 'grec')])
     button_play_grec.pack(side="top")
-    button_play_diff=tk.Button(canvas_bouton, text="Mode Difficile", font=("Algerian", 24),bg="red", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(False, "diff")])
+    button_play_diff=tk.Button(canvas_bouton, text="Mode Difficile", font=("Algerian", 24),bg="red", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(False, "difficile")])
     button_play_diff.pack(side="top")
     espace_bouton=tk.Canvas(canvas_bouton, height="30")
     espace_bouton.pack(side="top")
@@ -360,93 +360,29 @@ def cacher_mot():
     # print(mot_choisi)
 
 def rejouer(victoire):
-    """Propose de refaire une partie de pendu.
-    Fonction bricolé à revoir rapidement !"""
+    """Propose de refaire une partie de pendu."""
     global canvas_rejouer, label_rejouer, label_score, mode
     canvas_rejouer = tk.Canvas(frame, width=200, height=70)
     canvas_rejouer.pack(side="bottom")
-    if mode == "normal":
-        if victoire==True:
-            scores['normal'] += 1
-            if int(scores['normal']) > int(best_scores['normal']):
-                best_scores['normal'] = scores['normal']
-                ecrire_best_score(False)
-            label_score = tk.Label(frame, text=f"Votre score est de : {scores['normal']}. Le meilleur score est de : {best_scores['normal']}.", font=("Comic Sans MS", 16))
-            label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
-            label_rejouer.pack(side="bottom")
-            label_score.pack(side="bottom")
-        else:
-            label_score = tk.Label(frame, text=f"Votre score était de : {scores['normal']}. Le meilleur score est de : {best_scores['normal']}.", font=("Comic Sans MS", 16))
-            label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
-            label_rejouer.pack(side="bottom")
-            label_score.pack(side="bottom")
-            scores['normal'] = 0
-        button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'normal')])
-        button_rejouer_oui.grid(row=0, column=1)
-        button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
-        button_rejouer_non.grid(row=0, column=3)
-    if mode == "diff":
-        if victoire==True:
-            gscores['difficile'] += 1
-            if int(scores['difficile']) > int(best_scores['difficile']):
-                best_scores['difficile'] = scores['difficile']
-                ecrire_best_score(False)
-            label_score = tk.Label(frame, text=f"Votre score est de : {scores['difficile']}. Le meilleur score est de : {best_scores['difficile']}.", font=("Comic Sans MS", 16))
-            label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
-            label_rejouer.pack(side="bottom")
-            label_score.pack(side="bottom")
-        else:
-            label_score = tk.Label(frame, text=f"Votre score était de : {scores['difficile']}. Le meilleur score est de : {best_scores['difficile']}.", font=("Comic Sans MS", 16))
-            label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
-            label_rejouer.pack(side="bottom")
-            label_score.pack(side="bottom")
-            scores['difficile'] = 0
-        button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'diff')])
-        button_rejouer_oui.grid(row=0, column=1)
-        button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
-        button_rejouer_non.grid(row=0, column=2)
-    if mode == "aveugle":
-        if victoire==True:
-            scores['aveugle'] += 1
-            if int(scores['aveugle']) > int(best_scores['aveugle']):
-                best_scores['aveugle'] = scores['aveugle']
-                ecrire_best_score(False)
-            label_score = tk.Label(frame, text=f"Votre score est de : {scores['aveugle']}. Le meilleur score est de : {best_scores['aveugle']}.", font=("Comic Sans MS", 16))
-            label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
-            label_rejouer.pack(side="bottom")
-            label_score.pack(side="bottom")
-        else:
-            label_score = tk.Label(frame, text=f"Votre score était de : {scores['aveugle']}. Le meilleur score est de : {best_scores['aveugle']}.", font=("Comic Sans MS", 16))
-            label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
-            label_rejouer.pack(side="bottom")
-            label_score.pack(side="bottom")
-            scores['aveugle'] = 0
-        label_score.configure(bg='#ffffff')
-        label_rejouer.configure(bg='#ffffff')
-        button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'aveugle')])
-        button_rejouer_oui.grid(row=0, column=1)
-        button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
-        button_rejouer_non.grid(row=0, column=2)
-    if mode == "grec":
-        if victoire==True:
-            scores['grec'] += 1
-            if int(scores['grec']) > int(best_scores['grec']):
-                best_scores['grec'] = scores['grec']
-                ecrire_best_score(False)
-            label_score = tk.Label(frame, text=f"Votre score est de : {scores['grec']}. Le meilleur score est de : {best_scores['grec']}.", font=("Comic Sans MS", 16))
-            label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
-            label_rejouer.pack(side="bottom")
-            label_score.pack(side="bottom")
-        else:
-            label_score = tk.Label(frame, text=f"Votre score était de : {scores['grec']}. Le meilleur score est de : {best_scores['grec']}.", font=("Comic Sans MS", 16))
-            label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
-            label_rejouer.pack(side="bottom")
-            label_score.pack(side="bottom")
-            scores['grec'] = 0
-        button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'grec')])
-        button_rejouer_oui.grid(row=0, column=1)
-        button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
-        button_rejouer_non.grid(row=0, column=2)
+    if victoire==True:
+        scores[mode] += 1
+        if int(scores[mode]) > int(best_scores[mode]):
+            best_scores[mode] = scores[mode]
+            ecrire_best_score(False)
+        label_score = tk.Label(frame, text=f"Votre score est de : {scores[mode]}. Le meilleur score est de : {best_scores[mode]}.", font=("Comic Sans MS", 16))
+        label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
+        label_rejouer.pack(side="bottom")
+        label_score.pack(side="bottom")
+    else:
+        label_score = tk.Label(frame, text=f"Votre score était de : {scores[mode]}. Le meilleur score est de : {best_scores[mode]}.", font=("Comic Sans MS", 16))
+        label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
+        label_rejouer.pack(side="bottom")
+        label_score.pack(side="bottom")
+        scores[mode] = 0
+    button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, mode)])
+    button_rejouer_oui.grid(row=0, column=1)
+    button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
+    button_rejouer_non.grid(row=0, column=3)
 
 def fin_perdu():
     """Propose une fin où le joueur n'a pas réussit à trouver le mot caché."""
@@ -502,7 +438,7 @@ def initialisation(replay, mode_jeu):
         canvas_bouton.destroy()
     nb_erreurs = 1
     lettres_utilisees=[]
-    if mode=='diff':
+    if mode=='difficile':
         texte_principal('red', False)
         pendu0()
         choix_mot(f"dico{DIRECTORY_SEP}dico_diff.txt")
