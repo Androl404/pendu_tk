@@ -7,10 +7,18 @@ from tkhtmlview import HTMLLabel
 import webbrowser
 import urllib.request
 import os
+import platform
+import csv
 
 # Importation du mixeur de "Pygame" et suppression de son message de bienvenue dans la console
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 from pygame import mixer
+
+OS_PLATFORM = platform.system();
+if OS_PLATFORM == 'Windows':
+    DIRECTORY_SEP = "\\"
+else:
+    DIRECTORY_SEP = "/"
 
 # Initialisation du mixeur de pygame
 mixer.init()
@@ -18,67 +26,57 @@ mixer.init()
 # Création de la fenêtre
 fenetre=tk.Tk()
 fenetre.title("Le jeu du pendu")
-# fenetre.iconbitmap("@./icone.xbm")
-fenetre.iconbitmap("icone.ico")
-fenetre.minsize(900, 600)
-fenetre.geometry("900x600")
+if OS_PLATFORM == 'Windows':
+    fenetre.iconbitmap("icone.ico")
+else:
+    fenetre.iconbitmap("@./icone.xbm")
+
+fenetre.minsize(1000, 600)
+fenetre.geometry("1000x600")
 frame = tk.Frame(fenetre)
 
-pendu_version = '1.4.2'
+version = open("last_version.txt", "r", encoding="utf-8")
+pendu_version = version.read()[:-1]
+version.close()
 
-class Score():
-    def __init__(self, mode, fichier):
-        self.score = 0
-        self.best_score = 0
-        self.mode = mode
-        self.fichier = fichier
-    
-    def verifier_fichiers(self):
-        global dir
-        dir = os.getenv('APPDATA')+"\\Jeu du pendu\\score\\"
-        if os.path.exists(dir)==False:
-            os.makedirs(dir)
-        if os.path.exists(dir+self.fichier)==False:
-            contenu_fichier = open(dir+self.fichier, "w", encoding="utf-8")
-            contenu_fichier.write("0")
-            contenu_fichier.close()
-    
-    def recup_best_score(self):
-        contenu_fichier = open(dir+self.fichier, "r", encoding="utf-8")
-        self.best_score = contenu_fichier.read()
-        contenu_fichier.close()
-    
-    def ecrire_best_score(self, reset):
-        contenu_fichier = open(dir+self.fichier, "w", encoding="utf-8")
-        if reset:
-            contenu_fichier.write("0")
-            self.best_score = 0
-            contenu_fichier.close()
-            messagebox.showinfo(f'Meilleur score {self.mode}', f'Le meilleur score {self.mode} a été réinitialisé et est maintenant de : {self.best_score}.')
-        else:
-            contenu_fichier.write(str(self.best_score))
-            contenu_fichier.close()
-            self.best_score = self.score
-    
-    def afficher_best_score(self):
-        messagebox.showinfo(f'Meilleur score {self.mode}', f'Le meilleur score {self.mode} est de : {self.best_score}.')
+if OS_PLATFORM == 'Windows':
+    dir = os.getenv('APPDATA')+"\\Jeu du pendu\\"
+    if os.path.exists(dir) == False:
+        os.makedirs(dir)
+    file_name = "score.csv"
+else:
+    dir = os.getenv('HOME') + "/"
+    file_name = ".pendu_score.csv"
+global best_scores
+if os.path.exists(dir + file_name) == False:
+    fichier = open(dir + file_name, "w", encoding="utf-8")
+    fichier.write("normal,difficile,aveulge,grec\n0,0,0,0")
+    fichier.close()
+    best_scores = {'normal' : 0, 'difficile' : 0, 'aveugle' : 0, 'grec' : 0}
+else:
+    fichier = open(dir + file_name, "r", encoding="utf-8")
+    best_scores = list(csv.DictReader(fichier))[0]
+    fichier.close()
+
+def ecrire_best_score(reset, mode):
+    if platform == 'Windows':
+        location = os.getenv('APPDATA')+"\\Jeu du pendu\\score.csv"
+    else:
+        location = "~/.pendu_score.csv"
+    fichier = open(location, "w", encoding="utf-8")
+    if reset:
+        best_scores[mode] = 0;
+        messagebox.showinfo(f'Meilleur score {mode}', f'Le meilleur score {mode} a été réinitialisé et est maintenant de : {best_scores[mode]}.')
+    ecrire = csv.writer(fichier)
+    ecrire.writerow(best_scores[0].keys)
+    ecrire.writerow(best_scores[1].values)
+    fichier.close()
+                        
+def afficher_best_score(mode):
+    messagebox.showinfo(f'Meilleur score {mode}', f'Le meilleur score {mode} est de : {best_scores[mode]}.')
 
 # Création des scores pour les différents modes
-score_normal = Score("normal", "score.txt")
-score_normal.verifier_fichiers()
-score_normal.recup_best_score()
-
-score_diff = Score("difficile", "score_diff.txt")
-score_diff.verifier_fichiers()
-score_diff.recup_best_score()
-
-score_aveugle = Score("aveugle", "score_aveugle.txt")
-score_aveugle.verifier_fichiers()
-score_aveugle.recup_best_score()
-
-score_grec = Score("grec", "score_grec.txt")
-score_grec.verifier_fichiers()
-score_grec.recup_best_score()
+scores = {'normal' : 0, 'difficile' : 0, 'aveugle' : 0, 'grec' : 0}
 
 class Window(tk.Toplevel):
     """Permet de créer une sous-fenêtre pour l'aide ou les notes de mises à jour par exemple"""
@@ -87,7 +85,10 @@ class Window(tk.Toplevel):
     
     def titre_icone(self, titre):
         self.title(titre)
-        self.iconbitmap("icone.ico")
+        if OS_PLATFORM == 'Windows':
+            self.iconbitmap("icone.ico")
+        else:
+            self.iconbitmap("@./icone.xbm")
         self.minsize(600,500)
         self.geometry("600x500")
     
@@ -112,23 +113,9 @@ class Window(tk.Toplevel):
 
 def update():
     """Crée une sous-fenêtre à l'aide de la classe Window pour afficher les notes de mises à jour"""
-    texte_update = """<ul><li><b>Version 1.4.2</b><ol><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 190 parties de pendu en utilisant la même fenêtre</li><li>Mise à jour du dictionnaire grec qui contient désormais 192 mots</li><li>Ajout d'un raccourci pour fermer les sous-fenêtres</li><li>Correction d'un bug en mode Grec qui affichait deux fois la dernière lettre</li><li>Optimisation du code du jeu du pendu</li><li>Mise à jour de la section &laquo; Contributeurs &raquo; et de la section &laquo; Aide &raquo; du jeu du pendu</li></ol></li>
-        <li><b>Version 1.4.1</b><ol><li>Correction d'un bug qui empêchait de lancer une partie en mode Normal et diverses corrections</li></ol></li>
-        <li><b>Version 1.4.0</b><ol><li>Séparation du mode normal et des autres modes dans le menu principal en les déplaçant dans une partie accessible à l'aide du bouton sur le menu principal</li></ol></li>
-        <li><b>Version 1.3.6</b><ol><li>Mise à jour de la section &laquo; Aide &raquo; du jeu du pendu</li><li>Le jeu du pendu prend désormais en charge plusieurs versions de Windows (7, 8, 8.1, 10 et 11) !</li><li>Ajout d'une option pour vérifier les mises à jour du jeu du pendu</li><li>Ajout d'un bouton dans la barre de menu pour ouvrir le dépôt GitHub</li><li>Déplacement du bouton pour fermer les fenêtres &laquo; Aide &raquo;, &laquo; Notes de mises à jour &raquo; et &laquo; Contributeurs &raquo;.</li></ol></li>
-        <li><b>Version 1.3.5</b><ol><li>Correction d'un bug sur la création des répertoires pour le stockage du score</li><li>Correction d'une erreur dans un des mots du mode Grec</li><li>Mise à jour des sections &laquo; Contributeurs&raquo;, &laquo; Aide &raquo; et &laquo; À propos &raquo;</li><li>Ajout de mots au mode Grec</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 105 parties de pendu en utilisant la même fenêtre</li></ol></li>
-        <li><b>Version 1.3.4</b><ol><li>Changement de l'emplacement du stockage du score, pour une meilleure compatibilité pour l'installation dans le dossier "Programs Files" de Windows</li></ol></li>
-        <li><b>Version 1.3.3</b><ol><li>Optimisation du code</li><li>Ajout de la section &laquo; Contributeurs &raquo;</li><li>Correction d'un bug qui bloquait le lancement d'une partie en mode &laquo; Normal &raquo;</li><li>Correction d'un bug qui empêchait le meilleur score de monter à plus de 9</li></ol></li>
-        <li><b>Version 1.3.2</b><ol><li>Optimisation du jeu et du code</li><li>Correction de bugs mineurs</li><li>Les mots déjà apparus dans une partie ne devrait plus ré-apparaître sauf si vous enchaînez 36 parties de pendu en utilisant la même fenêtre</li><li>Diminution de la taille du jeu du pendu (musiques désormais en .MP3)</li></ol></li>
-        <li><b>Version 1.3.1</b><ol><li>Dans le mode de jeu &laquo; Grec &raquo;, certaines lettres grecques n'apparaissaient pas comme bouton. Ce but a été partiellement corrigé puisque la dernière lettre est en doublon mais cela ne devrait pas affecter la partie.</li></ol></li>
-        <li><b>Version 1.3</b><ol><li>Ajout du mode de jeu &laquo; Grec &raquo;, de ses bruitages, de son aide, de son score et mise à jour de la barre de menus</li><li>Correction de l'affichage des boutons de l'écran de fin en mode &laquo; Aveugle &raquo;</li></ol></li>
-        <li><b>Version 1.2</b><ol><li>Ajout du mode de jeu &laquo; Aveugle &raquo;, de ses bruitages, de sa couleur de fond, de son aide, de son score et mise à jour de la barre de menus</li><li>Ajout d'un raccourci clavier pour ouvrir l'aide</li><li>Ajout de boutons pour fermer l'aide et les notes de mises à jour</li></ol></li>
-        <li><b>Version 1.1.2</b><ol><li>Ajout des sections &laquo; Aide &raquo; et &laquo; Notes de mises à jour &raquo;</li><li>Changement des musiques de victoire et de perte</li><li>Correction d'un bug d'espacement des éléments</li><li>Suppression du verbe &laquo; branler &raquo; ainsi que de toutes ses conjugaisons du dictionnaire de mot difficile.</li></ol></li>
-        <li><b>Version 1.1.1</b><ol><li>Fenêtre de jeu plus grande et espacement de certains éléments du jeu</li><li>Changement de certaines polices (invisible sur certaines machines)</li><li>Le titre se met en gras en fonction des différents modes de jeu</li></ol></li>
-        <li><b>Version 1.1</b><ol><li>Ajout du mode de jeu &laquo; Difficile &raquo; et implémentation de son score et meilleur score</li><li>Ré-organisation et ajout d'éléments dans la barre de menus</li><li>Ajout d'un raccourci clavier pour quitter le jeu</li><li>Ajout de la possibilité de retourner au menu principal après avoir terminé une partie</li><li>Ajout et changement des musiques</li><li>Changement de couleur du titre en fonction du mode de jeu</li></ol></li>
-        <li><b>Version 1.0.2</b><ol><li>Ajout d'images pour la victoire et la perte</li><li>Ajout de différentes musiques</li></ol></li>
-        <li><b>Version 1.0</b><ol><li>Publication de la première version stable du jeu du pendu avec une interface graphique</li></ol></li></ul>
-        <p>Section fournie et mise à jour par Andrei Zeucianu</p>"""
+    fichier = open(f"text{DIRECTORY_SEP}update.html", "r", encoding="utf-8")
+    texte_update = fichier.read()
+    fichier.close()
 
     update = Window(fenetre)
     update.titre_icone("Notes de mises à jour")
@@ -138,17 +125,9 @@ def update():
 
 def help():
     """Crée une sous-fenêtre à l'aide de la classe Window pour afficher l'aide du jeu du pendu"""
-    texte_help = """<p>Voici l'aide du jeu du pendu. Vous trouverez ici les règles et le fonctionnement de cette application ainsi que des différents modes de jeu disponibles.</p>
-    <p>Le jeu du pendu en lui-même est très simple : un mot est choisi au hasard et vous devez le retrouvez en vous servant de toutes les lettres de l'alphabet. Si vous choissisez une lettre qui se trouve une ou plusieurs fois dans le mot, alors elle(s) s'affiche(nt). Sinon, vous progressez dans votre pendu. Mais attention, si vous faites 7 erreurs, la partie s'arrête et vous avez perdu.</p>
-    <p>Dans cette application, vous retrouverez plusieurs modes de jeu vous tous plus difficile les uns que les autres et vous poussant à donner votre maximum.</p>
-    <p>Voici les règles des différents modes de jeu :</p>
-    <ul><li><b>Mode normal :</b> Une partie de pendu, tout ce qu'il y a de plus normal. Un mot facile est choisi parmi 889 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.</li>
-    <li><b>Mode difficile :</b> Une partie de pendu, mais des mots beaucoup plus difficiles venants essentiellement du XVIIème siècle. Ce mot est choisi parmis 328 969 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.</li>
-    <li><b>Mode aveugle :</b> Une partie de pendu avec des mots faciles. Cependant, vous ne voyez pas les lettres au fur et à mesure dans votre mot. Vous devez vous fier au sons émis lorsque vous cliquez sur une lettre pour savoir si cette lettre se trouve dans le mot ou pas. Il s'agit du principe MOTUS. Les lettres présentent dans le mot que vous avez trouvé émettent un bruit positif lorsque vous cliquez sur une autre lettre toujours présente dans le mot. Si une lettre n'est pas dans le mot, alors un bruit négatif est émis. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.</li>
-    <li><b>Mode Grec :</b> Une partie de pendu normale avec des mots grecs choisit parmis 107 mots. Votre score représente le nombre de victoire(s) réalisée(s) d'affilée. Le meilleur score est mis à jour et sauvegardée chaque fois que le score devient plus grand que le meilleur score. Le meilleur score peut être réinitialisé depuis la barre de menus.<br>Créé dans le cadre du cours de latin avec M. Jean-François Bothera.</li></ul>
-    <p>Si vous rencontrez des bugs ou des soucis avec les différents fonctionnalités de cette application, n'hésitez pas à ouvrir un ticket sur le <a href='https://github.com/Androl404/pendu_tk'>dépôt GitHub</a> du jeu.</p>
-    <p><strong>Astuce pour les pros :</strong> Si vous souhaitez fermer une sous-fenêtre comme celle-ci, vous pouvez appuyer sur <i>Espace</i>.</p>
-    <br><br><br>Section d'aide fournie et mise à jour par Andrei Zeucianu"""
+    fichier = open(f"text{DIRECTORY_SEP}help.html", "r", encoding="utf-8")
+    texte_help = fichier.read()
+    fichier.close()
 
     help = Window(fenetre)
     help.titre_icone("Aide du jeu du pendu")
@@ -158,10 +137,9 @@ def help():
 
 def contributeurs():
     """Crée une sous-fenêtre à l'aide de la classe Window pour afficher les contributeurs du jeu du pendu"""
-    texte_contributeurs = """<p>Voici la liste des personnes ayant contribué à ce projet ainsi que l'aide concrète apportée :
-    <ul><li><b>Anthony GAGO--KLIMENKO</b> : Aide mineure au développement et composition des musiques du mode &laquo; Normal &raquo;</li>
-    <li><b>Corentin DOMENICHINI</b> : Bêta-testing du jeu pour différentes versions, mode &laquo; Aveugle &raquo; basé sur une de ses idées, fourniture de la liste de mots difficiles et revue générale du jeu</li></ul></p>
-    <p>Section fournie et mise à jour par Andrei Zeucianu<br>N'hésitez pas à allez voir ma <a href="https://www.youtube.com/@tiroirdandrol">chaîne YouTube</a> !</p>"""
+    fichier = open(f"text{DIRECTORY_SEP}contributors.html", "r", encoding="utf-8")
+    texte_contributeurs = fichier.read()
+    fichier.close()
 
     contributeurs = Window(fenetre)
     contributeurs.titre_icone("Contributeurs")
@@ -175,23 +153,23 @@ file_menu = tk.Menu(menu_bar, tearoff=0)
 
 #file_menu.add_command(label="Nouvelle partie", command=lambda:preinitialisation())
 menu_normal = tk.Menu(menu_bar, tearoff=0)
-menu_normal.add_command(label="Voir le meilleur score", command=lambda:score_normal.afficher_best_score())
-menu_normal.add_command(label="Réinitialiser le meilleur score", command=lambda:score_normal.ecrire_best_score(True))
+menu_normal.add_command(label="Voir le meilleur score", command=lambda:afficher_best_score('normal'))
+menu_normal.add_command(label="Réinitialiser le meilleur score", command=lambda:ecrire_best_score(True, 'normal'))
 file_menu.add_cascade(label="Mode normal", underline=0, menu=menu_normal)
 
 menu_aveugle = tk.Menu(menu_bar, tearoff=0)
-menu_aveugle.add_command(label="Voir le meilleur score aveugle", command=lambda:score_aveugle.afficher_best_score())
-menu_aveugle.add_command(label="Réinitialiser le meilleur score auveugle", command=lambda:score_aveugle.ecrire_best_score(True))
+menu_aveugle.add_command(label="Voir le meilleur score aveugle", command=lambda:afficher_best_score('aveugle'))
+menu_aveugle.add_command(label="Réinitialiser le meilleur score auveugle", command=lambda:ecrire_best_score(True, 'aveugle'))
 file_menu.add_cascade(label="Mode aveugle", underline=0, menu=menu_aveugle)
 
 menu_grec = tk.Menu(menu_bar, tearoff=0)
-menu_grec.add_command(label="Voir le meilleur score grec", command=lambda:score_grec.afficher_best_score())
-menu_grec.add_command(label="Réinitialiser le meilleur score grec", command=lambda:score_grec.ecrire_best_score(True))
+menu_grec.add_command(label="Voir le meilleur score grec", command=lambda:afficher_best_score('grec'))
+menu_grec.add_command(label="Réinitialiser le meilleur score grec", command=lambda:ecrire_best_score(True, 'grec'))
 file_menu.add_cascade(label="Mode grec", underline=0, menu=menu_grec)
 
 menu_diff = tk.Menu(menu_bar, tearoff=0)
-menu_diff.add_command(label="Voir le meilleur score difficile", command=lambda:score_diff.afficher_best_score())
-menu_diff.add_command(label="Réinitialiser le meilleur score difficile", command=lambda:score_diff.ecrire_best_score(True))
+menu_diff.add_command(label="Voir le meilleur score difficile", command=lambda:afficher_best_score('difficile'))
+menu_diff.add_command(label="Réinitialiser le meilleur score difficile", command=lambda:ecrire_best_score(True, 'difficile'))
 file_menu.add_cascade(label="Mode difficile", underline=0, menu=menu_diff)
 
 file_menu.add_separator()
@@ -232,7 +210,7 @@ def verify_update():
 def play_music(music, loops):
     """Joue la musique donné en paramètre. Possibilité de jouer une musique en boucle."""
     mixer.music.load(music)
-    if loops==True:
+    if loops == True:
         mixer.music.play(loops=-1)
     else:
         mixer.music.play()
@@ -243,7 +221,7 @@ def stop_music():
 
 def about():
     """Définit le message à propos des auteurs."""
-    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Merci aux contributeurs ❤' , 'Copyright 2023, Tous droits réservés', f'Version {pendu_version} (Stable)']
+    lines = ['Jeu du pendu', 'Développé par Andrei Zeucianu','Merci aux contributeurs ❤' , 'Copyright 2024, Tous droits réservés', f'Version {pendu_version} (Stable)']
     messagebox.showinfo('À propos de ce jeu', "\n".join(lines))
 
 def on_close():
@@ -312,7 +290,7 @@ def button(pre):
         mot_cache_label.destroy()
         canvas_dessin.destroy()
     return_main_menu(True)
-    play_music("music\\Menu.mp3", True)
+    play_music(f"music{DIRECTORY_SEP}Menu.mp3", True)
 button(False)
 create_mots_utilisees()
 
@@ -346,7 +324,7 @@ def choix_mot(file):
 def pendu0():
     """Détruit le bouton de départ, initialise le canvas pour les images du pendu et affiche la première image du pendu."""
     global canvas_dessin, img, button_play, button_play_diff, button_play_aveugle, button_play_grec
-    img = tk.PhotoImage(file="pendu_img\\pendu0.png")
+    img = tk.PhotoImage(file=f"pendu_img{DIRECTORY_SEP}pendu0.png")
     (l,h)=(img.width(),img.height())
     canvas_dessin = tk.Canvas(frame, width=l, height=h)
     canvas_dessin.create_image(l/2, h/2, image=img)
@@ -389,60 +367,60 @@ def rejouer(victoire):
     canvas_rejouer.pack(side="bottom")
     if mode == "normal":
         if victoire==True:
-            score_normal.score += 1
-            if int(score_normal.score) > int(score_normal.best_score):
-                score_normal.best_score = score_normal.score
-                score_normal.ecrire_best_score(False)
-            label_score = tk.Label(frame, text=f"Votre score est de : {score_normal.score}. Le meilleur score est de : {score_normal.best_score}.", font=("Comic Sans MS", 16))
+            scores['normal'] += 1
+            if int(scores['normal']) > int(best_scores['normal']):
+                best_scores['normal'] = scores['normal']
+                ecrire_best_score(False)
+            label_score = tk.Label(frame, text=f"Votre score est de : {scores['normal']}. Le meilleur score est de : {best_scores['normal']}.", font=("Comic Sans MS", 16))
             label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
         else:
-            label_score = tk.Label(frame, text=f"Votre score était de : {score_normal.score}. Le meilleur score est de : {score_normal.best_score}.", font=("Comic Sans MS", 16))
+            label_score = tk.Label(frame, text=f"Votre score était de : {scores['normal']}. Le meilleur score est de : {best_scores['normal']}.", font=("Comic Sans MS", 16))
             label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
-            score_normal.score = 0
+            scores['normal'] = 0
         button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'normal')])
         button_rejouer_oui.grid(row=0, column=1)
         button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
         button_rejouer_non.grid(row=0, column=3)
     if mode == "diff":
         if victoire==True:
-            score_diff.score += 1
-            if int(score_diff.score) > int(score_diff.best_score):
-                score_diff.best_score = score_diff.score
-                score_diff.ecrire_best_score(False)
-            label_score = tk.Label(frame, text=f"Votre score est de : {score_diff.score}. Le meilleur score est de : {score_diff.best_score}.", font=("Comic Sans MS", 16))
+            gscores['difficile'] += 1
+            if int(scores['difficile']) > int(best_scores['difficile']):
+                best_scores['difficile'] = scores['difficile']
+                ecrire_best_score(False)
+            label_score = tk.Label(frame, text=f"Votre score est de : {scores['difficile']}. Le meilleur score est de : {best_scores['difficile']}.", font=("Comic Sans MS", 16))
             label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
         else:
-            label_score = tk.Label(frame, text=f"Votre score était de : {score_diff.score}. Le meilleur score est de : {score_diff.best_score}.", font=("Comic Sans MS", 16))
+            label_score = tk.Label(frame, text=f"Votre score était de : {scores['difficile']}. Le meilleur score est de : {best_scores['difficile']}.", font=("Comic Sans MS", 16))
             label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
-            score_diff.score = 0
+            scores['difficile'] = 0
         button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'diff')])
         button_rejouer_oui.grid(row=0, column=1)
         button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
         button_rejouer_non.grid(row=0, column=2)
     if mode == "aveugle":
         if victoire==True:
-            score_aveugle.score += 1
-            if int(score_aveugle.score) > int(score_aveugle.best_score):
-                score_aveugle.best_score = score_aveugle.score
-                score_aveugle.ecrire_best_score(False)
-            label_score = tk.Label(frame, text=f"Votre score est de : {score_aveugle.score}. Le meilleur score est de : {score_aveugle.best_score}.", font=("Comic Sans MS", 16))
+            scores['aveugle'] += 1
+            if int(scores['aveugle']) > int(best_scores['aveugle']):
+                best_scores['aveugle'] = scores['aveugle']
+                ecrire_best_score(False)
+            label_score = tk.Label(frame, text=f"Votre score est de : {scores['aveugle']}. Le meilleur score est de : {best_scores['aveugle']}.", font=("Comic Sans MS", 16))
             label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
         else:
-            label_score = tk.Label(frame, text=f"Votre score était de : {score_aveugle.score}. Le meilleur score est de : {score_aveugle.best_score}.", font=("Comic Sans MS", 16))
+            label_score = tk.Label(frame, text=f"Votre score était de : {scores['aveugle']}. Le meilleur score est de : {best_scores['aveugle']}.", font=("Comic Sans MS", 16))
             label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
-            score_aveugle.score = 0
+            scores['aveugle'] = 0
         label_score.configure(bg='#ffffff')
         label_rejouer.configure(bg='#ffffff')
         button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'aveugle')])
@@ -451,20 +429,20 @@ def rejouer(victoire):
         button_rejouer_non.grid(row=0, column=2)
     if mode == "grec":
         if victoire==True:
-            score_grec.score += 1
-            if int(score_grec.score) > int(score_grec.best_score):
-                score_grec.best_score = score_grec.score
-                score_grec.ecrire_best_score(False)
-            label_score = tk.Label(frame, text=f"Votre score est de : {score_grec.score}. Le meilleur score est de : {score_grec.best_score}.", font=("Comic Sans MS", 16))
+            scores['grec'] += 1
+            if int(scores['grec']) > int(best_scores['grec']):
+                best_scores['grec'] = scores['grec']
+                ecrire_best_score(False)
+            label_score = tk.Label(frame, text=f"Votre score est de : {scores['grec']}. Le meilleur score est de : {best_scores['grec']}.", font=("Comic Sans MS", 16))
             label_rejouer=tk.Label(frame, text="Continuer la série ?", font=("Garamond",18), pady=10)
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
         else:
-            label_score = tk.Label(frame, text=f"Votre score était de : {score_grec.score}. Le meilleur score est de : {score_grec.best_score}.", font=("Comic Sans MS", 16))
+            label_score = tk.Label(frame, text=f"Votre score était de : {scores['grec']}. Le meilleur score est de : {best_scores['grec']}.", font=("Comic Sans MS", 16))
             label_rejouer=tk.Label(frame, text="Voulez vous rejouer ?", font=("Garamond",18), pady=10)
             label_rejouer.pack(side="bottom")
             label_score.pack(side="bottom")
-            score_grec.score = 0
+            scores['grec'] = 0
         button_rejouer_oui=tk.Button(canvas_rejouer, text="Oui", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), initialisation(True, 'grec')])
         button_rejouer_oui.grid(row=0, column=1)
         button_rejouer_non=tk.Button(canvas_rejouer, text="Revenir au menu principal", font=("Calibri", 15), bg="lightblue", cursor="hand2", bd=1, command=lambda:[stop_music(), texte_principal('black', False), button(True)])
@@ -476,7 +454,7 @@ def fin_perdu():
     canvas_alphabet.destroy()
     canvas_dessin.delete("all")
     nb_image = randint(1,9)
-    img=tk.PhotoImage(file="pleur\\pleur"+str(nb_image)+".png")
+    img=tk.PhotoImage(file=f"pleur{DIRECTORY_SEP}pleur"+str(nb_image)+".png")
     (l,h)=(img.width(),img.height())
     canvas_dessin.config(width=l, height=h)
     canvas_dessin.create_image(l/2, h/2, image=img)
@@ -485,9 +463,9 @@ def fin_perdu():
     mot_cache_label.config(text="Perdu, le mot à trouver était " + mot_choisi + " !", font=('Calibri',30))
     stop_music()
     if randint(1,2) == 1:
-        play_music("music\\defaite.mp3", False)
+        play_music(f"music{DIRECTORY_SEP}defaite.mp3", False)
     else:
-        play_music("music\\nope_court.mp3", False)
+        play_music(f"music{DIRECTORY_SEP}nope_court.mp3", False)
     rejouer(False)
 
 def fin_victoire():
@@ -497,7 +475,7 @@ def fin_victoire():
     mot_cache_label.config(text="Bravo, le mot à trouver était bien " + mot_choisi + " !", font=('Calibri',28))
     nb_image=randint(1,7)
     canvas_dessin.delete("all")
-    img=tk.PhotoImage(file="vic\\vic"+str(nb_image)+".png")
+    img=tk.PhotoImage(file=f"vic{DIRECTORY_SEP}vic"+str(nb_image)+".png")
     (l,h)=(img.width(),img.height())
     canvas_dessin.config(width=l, height=h)
     canvas_dessin.create_image(l/2, h/2, image=img)
@@ -505,9 +483,9 @@ def fin_victoire():
     canvas_dessin.image=img
     stop_music()
     if randint(1,2)==1:
-        play_music("music\\victoire.mp3", False)
+        play_music(f"music{DIRECTORY_SEP}victoire.mp3", False)
     else:
-        play_music("music\\ole.mp3", False)
+        play_music(f"music{DIRECTORY_SEP}ole.mp3", False)
     rejouer(True)
 
 def initialisation(replay, mode_jeu):
@@ -527,27 +505,27 @@ def initialisation(replay, mode_jeu):
     if mode=='diff':
         texte_principal('red', False)
         pendu0()
-        choix_mot("dico\\dico_diff.txt")
+        choix_mot(f"dico{DIRECTORY_SEP}dico_diff.txt")
         cacher_mot()
-        play_music("music\\jeu_diff.mp3", True)
+        play_music(f"music{DIRECTORY_SEP}jeu_diff.mp3", True)
     if mode=='grec':
         texte_principal('grec', False) 
         pendu0() 
-        choix_mot("dico\\dico_grec.txt")
+        choix_mot(f"dico{DIRECTORY_SEP}dico_grec.txt")
         cacher_mot()
-        play_music("music\\jeu_grec.mp3", True)
+        play_music(f"music{DIRECTORY_SEP}jeu_grec.mp3", True)
     if mode=='aveugle':
         texte_principal('black', False)
         pendu0()
-        choix_mot("dico\\dico.txt")
+        choix_mot(f"dico{DIRECTORY_SEP}dico.txt")
         cacher_mot()
         fond_color("#ffffff")
     if mode=='normal':
         texte_principal('black', False)
         pendu0()
-        choix_mot("dico\\dico.txt")
+        choix_mot(f"dico{DIRECTORY_SEP}dico.txt")
         cacher_mot()
-        play_music("music\\jeu.mp3", True)
+        play_music(f"music{DIRECTORY_SEP}jeu.mp3", True)
     creation_bouton()
     
 def if_in_mot(event):
@@ -571,7 +549,7 @@ def if_in_mot(event):
         else:
             bouton_lettre.config(state='disabled', bg='darkred')
             canvas_dessin.delete("all")
-            img=tk.PhotoImage(file="pendu_img\\pendu"+str(nb_erreurs)+".png")
+            img=tk.PhotoImage(file=f"pendu_img{DIRECTORY_SEP}pendu"+str(nb_erreurs)+".png")
             (l,h)=(img.width(),img.height())
             canvas_dessin.create_image(l/2, h/2, image=img)
             canvas_dessin.pack(side="top")
@@ -601,15 +579,15 @@ def if_in_mot_aveugle(event):
             else:
                 for c in mot_cache:
                     if c =="_":
-                        play_music("music\\mauvaise_reponse.mp3", False)
+                        play_music(f"music{DIRECTORY_SEP}mauvaise_reponse.mp3", False)
                         sleep(1.5)
                     else:
-                        play_music("music\\bonne_reponse.mp3", False)
+                        play_music(f"music{DIRECTORY_SEP}bonne_reponse.mp3", False)
                         sleep(1.5)
         else:
             bouton_lettre.config(state='disabled', bg='darkred')
             canvas_dessin.delete("all")
-            img=tk.PhotoImage(file="pendu_img\\pendu"+str(nb_erreurs)+".png")
+            img=tk.PhotoImage(file=f"pendu_img{DIRECTORY_SEP}pendu"+str(nb_erreurs)+".png")
             (l,h)=(img.width(),img.height())
             canvas_dessin.create_image(l/2, h/2, image=img)
             canvas_dessin.pack(side="top")
@@ -618,11 +596,11 @@ def if_in_mot_aveugle(event):
             if nb_erreurs>=8:
                 fin_perdu()
             else:
-                play_music("music\\mauvaise_reponse.mp3", False)
+                play_music(f"music{DIRECTORY_SEP}mauvaise_reponse.mp3", False)
 
 # Propose les dernières configurations de la fenêtre et lance la fenêtre
 fenetre.protocol('WM_DELETE_WINDOW', on_close)
 fenetre.config(menu=menu_bar)
 frame.pack(expand='YES')
-fenetre.wm_resizable(0, 0)
+# fenetre.wm_resizable(0, 0)
 fenetre.mainloop()

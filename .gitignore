@@ -2,5 +2,5 @@
 .git
 .DS_Store
 /flyer
-/doc
+/doc-perso
 *.db
